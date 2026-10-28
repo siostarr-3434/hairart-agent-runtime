@@ -27,6 +27,7 @@ RUN npm ci --only=production
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/2R_BRAIN ./2R_BRAIN
+COPY --from=builder /app/src/public ./dist/public
 
 # Security: run as non-root user
 USER node

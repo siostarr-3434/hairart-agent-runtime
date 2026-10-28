@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sio Hair Clinic – Canlı Sesli Ajan (Cio)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background: #0b0f19; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+    .card { background: #161f30; border: 1px solid #22314a; border-radius: 24px; padding: 40px; max-width: 520px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    .badge { display: inline-block; background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
+    h1 { font-size: 26px; margin-bottom: 8px; color: #f8fafc; }
+    p.subtitle { font-size: 15px; color: #94a3b8; margin-bottom: 30px; line-height: 1.5; }
+    .avatar-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 30px; }
+    .avatar { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); }
+    .pulse-ring { position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; border-radius: 50%; border: 2px solid #6366f1; animation: pulse 2s infinite ease-out; opacity: 0; }
+    @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.3); opacity: 0; } }
+    .btn { background: #3b82f6; color: white; border: none; padding: 16px 36px; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); }
+    .btn:active { transform: translateY(0); }
+    .btn.listening { background: #ef4444; }
+    .status { margin-top: 20px; font-size: 14px; color: #64748b; min-height: 20px; }
+    .chat-box { margin-top: 25px; text-align: left; background: #0f172a; border-radius: 12px; padding: 15px; max-height: 180px; overflow-y: auto; font-size: 13px; line-height: 1.6; color: #cbd5e1; border: 1px solid #1e293b; }
+    .chat-msg { margin-bottom: 8px; }
+    .chat-msg.user { color: #60a5fa; font-weight: 600; }
+    .chat-msg.cio { color: #a78bfa; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="badge">● Sio Hair Clinic / Hair Art Clinics Voice AI</div>
+    <div class="avatar-wrapper">
+      <div class="pulse-ring" id="pulse"></div>
+      <div class="avatar">🩺</div>
+    </div>
+    <h1>Cio ile Canlı Konuşun</h1>
+    <p class="subtitle">Hollanda saç ekimi, FUE/DHI teknikleri, tahmini fiyatlar veya randevu hakkında sesli olarak soru sorun.</p>
+    
+    <button class="btn" id="talkBtn" onclick="toggleTalk()">
+      <span id="btnIcon">🎙️</span>
+      <span id="btnText">Konuşmayı Başlat</span>
+    </button>
+    
+    <div class="status" id="statusText">Mikrofon izni vererek konuşmaya başlayabilirsiniz.</div>
+
+    <div class="chat-box" id="chatBox">
+      <div class="chat-msg cio">Cio: Merhaba! Ben Sio Hair Clinic'ten Cio. Size nasıl yardımcı olabilirim? (Welkom bij Sio Hair Clinic!)</div>
+    </div>
+  </div>
+
+  <script>
+    let isListening = false;
+    let recognition;
+    const talkBtn = document.getElementById('talkBtn');
+    const btnText = document.getElementById('btnText');
+    const btnIcon = document.getElementById('btnIcon');
+    const statusText = document.getElementById('statusText');
+    const pulse = document.getElementById('pulse');
+    const chatBox = document.getElementById('chatBox');
+
+    // Web Speech API
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const synth = window.speechSynthesis;
+
+    function appendMessage(sender, text) {
+      const msg = document.createElement('div');
+      msg.className = 'chat-msg ' + (sender === 'Siz' ? 'user' : 'cio');
+      msg.innerText = sender + ': ' + text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function speak(text) {
+      if (!synth) return;
+      synth.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      
+      // Select appropriate voice based on language
+      const voices = synth.getVoices();
+      const trVoice = voices.find(v => v.lang.includes('tr'));
+      if (trVoice) utterance.voice = trVoice;
+
+      utterance.onstart = () => {
+        statusText.innerText = "Cio konuşuyor...";
+        pulse.style.opacity = '1';
+      };
+      utterance.onend = () => {
+        statusText.innerText = "Dinleme hazır. 'Konuşmayı Başlat'a basabilirsiniz.";
+        pulse.style.opacity = '0';
+      };
+      synth.speak(utterance);
+    }
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'tr-TR';
+
+      recognition.onstart = () => {
+        statusText.innerText = "Sizi dinliyorum, konuşabilirsiniz...";
+        pulse.style.opacity = '1';
+      };
+
+      recognition.onresult = async (event) => {
+        const transcript = event.results[0][0].transcript;
+        appendMessage('Siz', transcript);
+        statusText.innerText = "Cio düşünüyor...";
+        
+        try {
+          const res = await fetch('/api/chat/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: transcript })
+          });
+          const data = await res.json();
+          const reply = data.reply || "Sizi duyamadım, tekrar eder misiniz?";
+          appendMessage('Cio', reply);
+          speak(reply);
+        } catch (err) {
+          appendMessage('Cio', "Bağlantıda bir aksaklık oldu, ama buradayım!");
+        }
+      };
+
+      recognition.onerror = (e) => {
+        statusText.innerText = "Ses algılanamadı (" + e.error + ")";
+        stopTalk();
+      };
+
+      recognition.onend = () => {
+        stopTalk();
+      };
+    } else {
+      statusText.innerText = "Tarayıcınız Web Speech API desteklemiyor. Lütfen Chrome kullanın.";
+    }
+
+    function toggleTalk() {
+      if (!recognition) return;
+      if (!isListening) {
+        startTalk();
+      } else {
+        stopTalk();
+      }
+    }
+
+    function startTalk() {
+      isListening = true;
+      talkBtn.classList.add('listening');
+      btnText.innerText = "Dinleniyor... (Durdur)";
+      btnIcon.innerText = "⏹️";
+      try { recognition.start(); } catch(e){}
+    }
+
+    function stopTalk() {
+      isListening = false;
+      talkBtn.classList.remove('listening');
+      btnText.innerText = "Konuşmayı Başlat";
+      btnIcon.innerText = "🎙️";
+      pulse.style.opacity = '0';
+    }
+  </script>
+</body>
+</html>

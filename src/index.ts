@@ -1,5 +1,7 @@
 import express from 'express';
 import http from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import cors from 'cors';
 import helmet from 'helmet';
 import { WebSocketServer } from 'ws';
@@ -8,6 +10,10 @@ import { healthRouter } from './routes/health.js';
 import { ingestRouter } from './routes/ingest.js';
 import { voiceRouter, handleVoiceWebSocket } from './routes/voice.js';
 import { whatsappRouter } from './routes/whatsapp.js';
+import { chatRouter } from './routes/chat.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -17,11 +23,15 @@ app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Serve static voice UI
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Mount Routes
 app.use(healthRouter);
 app.use(ingestRouter);
 app.use(voiceRouter);
 app.use(whatsappRouter);
+app.use(chatRouter);
 
 // Create HTTP server
 const server = http.createServer(app);
