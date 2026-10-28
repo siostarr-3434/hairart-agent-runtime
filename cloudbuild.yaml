@@ -1,0 +1,45 @@
+# Google Cloud Build deployment to Google Cloud Run
+# GCP Project ID: hair-art-son
+# Region: europe-west4 (Eemshaven, Netherlands)
+
+steps:
+  # 1. Build the container image using Dockerfile
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'europe-west4-docker.pkg.dev/hair-art-son/hairart-containers/agent-runtime:$COMMIT_SHA'
+      - '-t'
+      - 'europe-west4-docker.pkg.dev/hair-art-son/hairart-containers/agent-runtime:latest'
+      - '.'
+
+  # 2. Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - 'europe-west4-docker.pkg.dev/hair-art-son/hairart-containers/agent-runtime'
+
+  # 3. Deploy container image to Google Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'hairart-agent-runtime'
+      - '--image'
+      - 'europe-west4-docker.pkg.dev/hair-art-son/hairart-containers/agent-runtime:$COMMIT_SHA'
+      - '--region'
+      - 'europe-west4'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars'
+      - 'NODE_ENV=production,PORT=8080,GCP_PROJECT_ID=hair-art-son,DEFAULT_REGION=europe-west4'
+
+images:
+  - 'europe-west4-docker.pkg.dev/hair-art-son/hairart-containers/agent-runtime:$COMMIT_SHA'
+  - 'europe-west4-docker.pkg.dev/hair-art-son/hairart-containers/agent-runtime:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

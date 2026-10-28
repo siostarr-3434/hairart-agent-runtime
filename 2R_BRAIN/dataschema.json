@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "2R_Super_Brain_Data_Schema",
+  "description": "Hair Art Clinics / Sio Hair Clinic Ajan Bilgi Bankası Şeması",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "clinic_name": { "type": "string", "default": "Hair Art Clinics (Sio Hair Clinic BV)" },
+        "country": { "type": "string", "default": "Netherlands" },
+        "default_language": { "type": "string", "default": "nl" },
+        "supported_languages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["nl", "en", "tr", "de", "fr", "ar"]
+        },
+        "regulatory_framework": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["BIG", "KVK", "GDPR", "WGBO"]
+        }
+      }
+    },
+    "privacy_levels": {
+      "type": "array",
+      "items": { "type": "string" },
+      "enum": ["patient-facing", "staff-only", "doctor-only", "confidential-finance"]
+    }
+  }
+}

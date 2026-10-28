@@ -1,0 +1,54 @@
+{
+  "clinic": "Sio Hair Clinic / Hair Art Clinics",
+  "currency": "EUR",
+  "target_market": "Netherlands & Europe",
+  "packages": [
+    {
+      "id": "fue-standard-3000",
+      "name": "Standard FUE Restorasyon",
+      "techniques": ["Sapphire FUE"],
+      "graft_range": "2500 - 3500",
+      "price_range": "€5,000 - €7,000",
+      "includes": [
+        "Konsültasyon & Saç Çizgisi Tasarımı",
+        "Lokal Anestezi",
+        "1 Seans PRP Tedavisi",
+        "1 Yıllık Post-Op Takip Kiti",
+        "Bakım Şampuanı ve Losyon Seti"
+      ]
+    },
+    {
+      "id": "dhi-premium-3000",
+      "name": "Premium DHI Maksimum Yoğunluk",
+      "techniques": ["DHI (Direct Hair Implantation / Choi Pen)"],
+      "graft_range": "2500 - 3500",
+      "price_range": "€6,500 - €8,500",
+      "includes": [
+        "Konsültasyon & 3D Saç Çizgisi Tasarımı",
+        "Ağrısız İğnesiz Lokal Anestezi",
+        "2 Seans PRP / Kök Hücre Desteği",
+        "VIP İyileşme Kiti",
+        "7/24 AI ve Medikal Asistan Desteği"
+      ]
+    },
+    {
+      "id": "prp-single-session",
+      "name": "PRP Seans Tedavisi",
+      "techniques": ["PRP"],
+      "price_range": "€250 - €400",
+      "includes": ["Tek Seans Otolog Plazma Enjeksiyonu", "Saç Kökü Canlandırma"]
+    },
+    {
+      "id": "vip-netherlands-package",
+      "name": "VIP Hollanda Paketi",
+      "techniques": ["Sapphire FUE veya DHI"],
+      "price_markup": "+%40",
+      "includes": [
+        "Özel Şoförlü VIP Transfer",
+        "4/5 Yıldızlı Otel (2 Gece Konaklama)",
+        "Özel Hemşire Eşliğinde İlk Yıkama"
+      ]
+    }
+  ],
+  "disclaimer": "Tüm fiyatlar ve greft sayıları ön bilgilendirme amaçlıdır. Nihai operasyon planı doktor muayenesi sonrasında kesinleşir."
+}
